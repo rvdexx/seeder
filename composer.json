@@ -1,12 +1,12 @@
 {
-    "name": "khalyomede/laravel-seed",
+    "name": "rv-life/seeder",
     "description": "Run your seeds like you run your migrations.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Khalyomede",
-            "email": "khalyomede@gmail.com"
+            "name": "Diwas KC",
+            "email": "diwas@rvlife.com"
         }
     ],
     "keywords": [
@@ -34,5 +34,12 @@
         "lint": "php-cs-fixer fix --diff --using-cache=no --allow-risky=yes --dry-run",
         "format": "php-cs-fixer --using-cache=no --allow-risky=yes fix",
         "analyse": "phpstan analyse"
+    },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Khalyomede\\LaravelSeed\\LaravelSeedServiceProvider"
+      ]
     }
+  }
 }
