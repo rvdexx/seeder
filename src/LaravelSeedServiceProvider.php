@@ -55,7 +55,7 @@ class LaravelSeedServiceProvider extends ServiceProvider
     {
         app()->config["filesystems.disks.seeders"] = [
             "driver" => "local",
-            "root" => database_path("seeders"),
+            "root" => database_path("seeders/migrations"),
         ];
     }
 }

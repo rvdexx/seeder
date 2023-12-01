@@ -1,0 +1,16 @@
+<?php
+
+use {{ modelNamespace }};
+
+class {{ class }}
+{
+    public function up()
+    {
+        {{ modelName }}::insert({{ upData }});
+    }
+
+    public function down()
+    {
+        {{ modelName }}::whereIn('name', {{ downData }})->delete();
+    }
+}

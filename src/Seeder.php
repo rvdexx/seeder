@@ -4,7 +4,6 @@ namespace Khalyomede\LaravelSeed;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
  * @property int $id
@@ -23,7 +22,7 @@ class Seeder extends Model
         return $query->where("batch", $number);
     }
 
-    public function scopeInReverseOrder(Builder $query): QueryBuilder
+    public function scopeInReverseOrder(Builder $query): Builder
     {
         return $query->orderBy("seeder", "desc");
     }

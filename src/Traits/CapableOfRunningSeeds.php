@@ -17,7 +17,7 @@ trait CapableOfRunningSeeds
 
     private function getAbsoluteSeederFilePath(): string
     {
-        return database_path("seeders/{$this->seedFileName}.php");
+        return database_path("seeders/migrations/{$this->seedFileName}.php");
     }
 
     private function getSeederClassName(): string

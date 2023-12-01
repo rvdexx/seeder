@@ -12,7 +12,7 @@ class SeedMake extends Command
 {
     use CapableOfRunningSeeds;
 
-    protected $signature = "seed:make {name : The name of the seeder. Can have sub folders in the name.} {--f|force : Will erase any existing file.} {--m|model= : The model into which to seed data.}";
+    protected $signature = "seed:make {name : The name of the seeder. Can have sub folders in the name.} {--f|force : Will erase any existing file.} {--m|model= : The model into which to seed data.} {--up|upData= : The data to seed.} {--down|downData= : The data to seed.}";
     protected $description = "Create a new seeder.";
     protected $name;
 
@@ -82,7 +82,12 @@ class SeedMake extends Command
      */
     private function createSeeder()
     {
-        if ($this->specifiedModel()) {
+        if($this->specifiedModelAndData()) {
+            $this->checkIfModelExists();
+            $this->checkIfDataExists();
+            $this->createSeederWithModelAndData();
+        }
+        else if ($this->specifiedModel()) {
             $this->checkIfModelExists();
             $this->createSeederWithModel();
         } else {
@@ -112,6 +117,13 @@ class SeedMake extends Command
         $this->storeSeederInFile();
     }
 
+    private function createSeederWithModelAndData()
+    {
+        $this->seederFilePath = $this->getFilePath();
+        $this->seederFileContent = $this->getSeederWithModelAndDataContent();
+        $this->storeSeederInFile();
+    }
+
     private function getStubWithoutModelContent(): string
     {
         $this->stubFilePath = __DIR__ . "/../stubs/SeederWithoutModel.stub";
@@ -126,6 +138,13 @@ class SeedMake extends Command
         return $this->getStubContent();
     }
 
+    private function getStubWithModelDataContent(): string
+    {
+        $this->stubFilePath = __DIR__ . "/../stubs/SeederWithModelData.stub";
+
+        return $this->getStubContent();
+    }
+
     private function getSeederWithoutModelContent(): string
     {
         return str_replace("{{ class }}", $this->getClassName(), $this->getStubWithoutModelContent());
@@ -136,6 +155,17 @@ class SeedMake extends Command
         $content = str_replace("{{ class }}", $this->getClassName(), $this->getStubWithModelContent());
         $content = str_replace("{{ modelNamespace }}", $this->getModelNamespace(), $content);
         $content = str_replace("{{ modelName }}", $this->getModelName(), $content);
+
+        return $content;
+    }
+
+    private function getSeederWithModelAndDataContent(): string
+    {
+        $content = str_replace("{{ class }}", $this->getClassName(), $this->getStubWithModelDataContent());
+        $content = str_replace("{{ modelNamespace }}", $this->getModelNamespace(), $content);
+        $content = str_replace("{{ modelName }}", $this->getModelName(), $content);
+        $content = str_replace("{{ upData }}", $this->getData(), $content);
+        $content = str_replace("{{ downData }}", $this->getDownData(), $content);
 
         return $content;
     }
@@ -165,12 +195,16 @@ class SeedMake extends Command
         return $this->option("model") !== null;
     }
 
+    private function specifiedModelAndData(): bool
+    {
+        return $this->specifiedModel() && $this->option("upData") !== null;
+    }
+
     private function getModelNamespace(): string
     {
         $model = $this->option("model");
         $model = is_string($model) ? $model : "";
-
-        return "App\\$model";
+        return $model;
     }
 
     private function getModelName(): string
@@ -178,7 +212,19 @@ class SeedMake extends Command
         $model = $this->option("model");
         $model = is_string($model) ? $model : "";
 
-        return basename($model);
+        return substr(basename($model), strrpos(basename($model), '\\') + 1);
+    }
+
+    private function getData(): string
+    {
+        $data = $this->option("upData");
+        return $data;
+    }
+
+    private function getDownData(): string
+    {
+        $data = $this->option("downData");
+        return $data;
     }
 
     /**
@@ -190,6 +236,17 @@ class SeedMake extends Command
 
         if (!class_exists($modelNamespace)) {
             $this->error("model $modelNamespace does not exist");
+
+            exit(4);
+        }
+    }
+
+    private function checkIfDataExists()
+    {
+        $data = $this->option("upData");
+
+        if (empty($data)) {
+            $this->error("data must be array");
 
             exit(4);
         }

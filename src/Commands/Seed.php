@@ -109,7 +109,6 @@ class Seed extends Command
     {
         $matches = [];
         $succeeded = preg_match("/\d+_\d+_\d+_\d+_([\w_]+)$/", $this->seedFileName, $matches);
-
         if ($succeeded === false) {
             throw new RuntimeException("An error occured while trying to get the name of the seeder class");
         }
@@ -123,7 +122,7 @@ class Seed extends Command
 
     private function getAbsoluteSeederFilePath(): string
     {
-        return database_path("seeders/{$this->seedFileName}.php");
+        return database_path("seeders/migrations/{$this->seedFileName}.php");
     }
 
     /**
