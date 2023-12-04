@@ -6,11 +6,11 @@ class {{ class }}
 {
     public function up()
     {
-        {{ modelName }}::insert({{ upData }});
+        {{ upData }}
     }
 
     public function down()
     {
-        {{ modelName }}::whereIn('name', {{ downData }})->delete();
+        {{ downData }}
     }
 }

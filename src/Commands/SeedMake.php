@@ -163,7 +163,6 @@ class SeedMake extends Command
     {
         $content = str_replace("{{ class }}", $this->getClassName(), $this->getStubWithModelDataContent());
         $content = str_replace("{{ modelNamespace }}", $this->getModelNamespace(), $content);
-        $content = str_replace("{{ modelName }}", $this->getModelName(), $content);
         $content = str_replace("{{ upData }}", $this->getData(), $content);
         $content = str_replace("{{ downData }}", $this->getDownData(), $content);
 
